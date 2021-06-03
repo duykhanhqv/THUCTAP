@@ -34,14 +34,13 @@ class GetProductByDate extends AbstractAjax
     {
         global $wpdb;
         $query = <<<EOT
-            SELECT * FROM wp_posts AS p LEFT JOIN wp_postmeta AS mt1 ON p.id = mt1.post_id LEFT JOIN wp_postmeta AS mt2 ON mt1.post_id = mt2.post_id  LEFT JOIN wp_postmeta AS mt3 ON mt1.post_id = mt3.post_id 
+            SELECT id,post_title FROM wp_posts AS p LEFT JOIN wp_postmeta AS mt1 ON p.id = mt1.post_id LEFT JOIN wp_postmeta AS mt2 ON mt1.post_id = mt2.post_id  LEFT JOIN wp_postmeta AS mt3 ON mt1.post_id = mt3.post_id 
             WHERE
                 p.post_type = 'product' AND
                 ( mt1.meta_key LIKE 'training_types_%_execution_of_training_has_live_course' AND mt1.meta_value = '1' ) AND
-                ( mt2.meta_key LIKE 'training_types_%_execution_of_training_live_course_dates_0_date' AND mt2.meta_value = '{$_GET['date_from']}' ) AND
-                ( mt3.meta_key LIKE 'training_types_%_execution_of_training_live_course_dates_1_date' AND mt3.meta_value = '{$_GET['date_to']}' ) AND
-                ( REPLACE(mt1.meta_key, '_execution_of_training_has_live_course', '') = REPLACE(mt2.meta_key, '_execution_of_training_live_course_dates_0_date', '') ) AND
-                ( REPLACE(mt1.meta_key, '_execution_of_training_has_live_course', '') = REPLACE(mt3.meta_key, '_execution_of_training_live_course_dates_1_date', '') )
+                ( mt2.meta_key LIKE 'training_types_%_execution_of_training_live_course_dates_%_date' AND mt2.meta_value BETWEEN '{$_GET['date_from']}' AND '{$_GET['date_to']}' ) AND
+                
+                ( REPLACE(mt1.meta_key, '_execution_of_training_has_live_course', '') = SUBSTR(REPLACE(mt1.meta_key, '_execution_of_training_live_course_dates_%_date', ''),1,16) )
             GROUP BY p.id
             EOT;
         $products = $wpdb->get_results($query);
