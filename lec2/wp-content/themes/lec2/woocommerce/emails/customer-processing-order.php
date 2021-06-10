@@ -487,7 +487,9 @@ if (!defined('ABSPATH')) {
                                                                             $post_id = $item->get_product_id();
                                                                         }
                                                                         $buy_as_gift = get_post_meta($post_id, 'buy_as_gift', true);
-                                                                        if ($buy_as_gift == 1) {
+                                                                        $client_checked_buy_as_gift = get_post_meta($order_id, 'client_checked_buy_as_gift', true);
+                                                                        //
+                                                                        if ($buy_as_gift == 1 && $client_checked_buy_as_gift == 1) {
                                                                             $coupon = code_to_create_coupon($order_id);
                                                                             echo "<p><strong>Coupon for next purchase:  " . $coupon . "</strong></p>";
                                                                         }
